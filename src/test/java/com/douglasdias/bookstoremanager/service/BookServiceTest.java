@@ -17,6 +17,8 @@ import java.util.Optional;
 
 import static com.douglasdias.bookstoremanager.utils.BookUtils.createFakeBook;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 public class BookServiceTest {
@@ -29,7 +31,7 @@ public class BookServiceTest {
     @Test
     void whenGivenExistingIdThenReturnThisBook() {
         Book expectedFoundBook = createFakeBook();
-        Mockito.when(bookRepository.findById(expectedFoundBook.getId())).thenReturn(Optional.of(expectedFoundBook));
+        when(bookRepository.findById(expectedFoundBook.getId())).thenReturn(Optional.of(expectedFoundBook));
         BookDTO bookDTO = null;
         try {
             bookDTO = bookService.findById(expectedFoundBook.getId());
@@ -39,5 +41,12 @@ public class BookServiceTest {
         } catch (BookNotFoundException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    void whenGivenUnexistingIdThenNotFoundThrowAnException() {
+        var invalidId = 10L;
+        when(bookRepository.findById(invalidId)).thenReturn(Optional.ofNullable(any(Book.class)));
+        assertThrows(BookNotFoundException.class, () -> bookService.findById(invalidId));
     }
 }
