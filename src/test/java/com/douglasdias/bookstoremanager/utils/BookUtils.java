@@ -26,7 +26,7 @@ public class BookUtils {
                 .build();
     }
 
-    private static Book createFakeBook(){
+    public static Book createFakeBook(){
         return Book.builder()
                 .id(faker.number().randomNumber())
                 .name(faker.book().title())
