@@ -2,6 +2,7 @@ package com.douglasdias.bookstoremanager.service;
 
 import com.douglasdias.bookstoremanager.dto.BookDTO;
 import com.douglasdias.bookstoremanager.entity.Book;
+import com.douglasdias.bookstoremanager.exception.BookNotFoundException;
 import com.douglasdias.bookstoremanager.repository.BookRepository;
 import com.douglasdias.bookstoremanager.utils.BookUtils;
 import org.junit.jupiter.api.Assertions;
@@ -29,9 +30,14 @@ public class BookServiceTest {
     void whenGivenExistingIdThenReturnThisBook() {
         Book expectedFoundBook = createFakeBook();
         Mockito.when(bookRepository.findById(expectedFoundBook.getId())).thenReturn(Optional.of(expectedFoundBook));
-        BookDTO bookDTO = bookService.findById(expectedFoundBook.getId());
-        assertEquals(expectedFoundBook.getName(), bookDTO.getName());
-        assertEquals(expectedFoundBook.getIsbn(), bookDTO.getIsbn());
-        assertEquals(expectedFoundBook.getPublisherName(), bookDTO.getPublisherName());
+        BookDTO bookDTO = null;
+        try {
+            bookDTO = bookService.findById(expectedFoundBook.getId());
+            assertEquals(expectedFoundBook.getName(), bookDTO.getName());
+            assertEquals(expectedFoundBook.getIsbn(), bookDTO.getIsbn());
+            assertEquals(expectedFoundBook.getPublisherName(), bookDTO.getPublisherName());
+        } catch (BookNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 }
